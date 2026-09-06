@@ -211,6 +211,9 @@ export async function grokChat(
         temperature: options?.temperature ?? 0.6,
         max_tokens: options?.maxTokens ?? 1024,
         stream: false,
+        // gpt-oss reasoning models: keep hidden reasoning short so the
+        // completion budget is spent on the actual JSON answer.
+        ...(model.includes("gpt-oss") ? { reasoning_effort: "low" } : {}),
       }),
       signal: controller.signal,
     });

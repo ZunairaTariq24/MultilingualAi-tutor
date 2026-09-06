@@ -1,11 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AppShell } from "@/components/AppShell";
 import { DrawingBoard } from "@/components/DrawingBoard";
 import { LoadingScreen } from "@/components/LoadingScreen";
+import { TeachingBoard } from "@/components/TeachingBoard";
 import { TutorChat } from "@/components/TutorChat";
 import { Chip } from "@/components/ui/Chip";
 import { fmt, uiFor } from "@/lib/i18n";
@@ -13,12 +14,20 @@ import { getLanguage } from "@/lib/languages";
 import { getSubject, getTopic } from "@/lib/subjects";
 import { useSession } from "@/lib/store";
 import { cn } from "@/lib/utils";
+import { applyWhiteboardAction, EMPTY_BOARD, type BoardState } from "@/lib/whiteboard";
+import type { WhiteboardAction } from "@/lib/types";
 
 export default function LearnPage() {
   const router = useRouter();
   const { language, subjectId, topicId, score } = useSession();
   const [mounted, setMounted] = useState(false);
   const [boardOpen, setBoardOpen] = useState(false);
+  // AI-controlled visual state — updated only via structured whiteboard actions.
+  const [board, setBoard] = useState<BoardState>(EMPTY_BOARD);
+
+  const handleWhiteboardAction = useCallback((action: WhiteboardAction) => {
+    setBoard((prev) => applyWhiteboardAction(prev, action));
+  }, []);
 
   useEffect(() => {
     setMounted(true);
@@ -65,10 +74,16 @@ export default function LearnPage() {
         {/* Desktop: chat beside whiteboard. Mobile: chat, then collapsible whiteboard. */}
         <div className="grid items-start gap-4 lg:grid-cols-[minmax(0,1fr)_minmax(0,420px)]">
           <div className="min-w-0">
-            <TutorChat language={lang} subject={subject} topic={topic} />
+            <TutorChat
+              language={lang}
+              subject={subject}
+              topic={topic}
+              boardLevel={board.level}
+              onWhiteboardAction={handleWhiteboardAction}
+            />
           </div>
 
-          {/* Whiteboard: always visible on desktop, toggle on mobile */}
+          {/* Whiteboard column: AI teaching visuals + student drawing area */}
           <div className="min-w-0 lg:sticky lg:top-20">
             <button
               type="button"
@@ -77,10 +92,13 @@ export default function LearnPage() {
             >
               {boardOpen ? t.hideBoard : t.showBoard}
             </button>
-            <div className={cn(boardOpen ? "block" : "hidden", "lg:block")}>
-              <p className="mb-1.5 hidden text-xs font-bold uppercase tracking-wide text-slate-400 lg:block">
-                🖊️ {t.whiteboard}
-              </p>
+            {/* The teacher's visual is always visible — it is part of the lesson. */}
+            <p className="mb-1.5 hidden text-xs font-bold uppercase tracking-wide text-slate-400 lg:block">
+              🖊️ {t.whiteboard}
+            </p>
+            <TeachingBoard subject={subject} topic={topic} board={board} />
+            {/* Student's own drawing canvas: toggle on mobile, below on desktop. */}
+            <div className={cn(boardOpen ? "block" : "hidden", "mt-3 lg:block")}>
               <DrawingBoard />
             </div>
           </div>

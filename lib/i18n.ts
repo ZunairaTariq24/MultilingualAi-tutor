@@ -54,6 +54,10 @@ export interface UiStrings {
   hideBoard: string;
   lessonComplete: string;
   online: string;
+  understoodEverything: string; // "I understood everything" button
+  explainYourselfPrompt: string; // "Now explain it in your own words"
+  doneExplaining: string; // finish the spoken explanation
+  analyzing: string; // tutor is analysing the explanation
 }
 
 export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
@@ -106,6 +110,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وائٹ بورڈ چھپائیں",
     lessonComplete: "🎉 سبق مکمل!",
     online: "آن لائن",
+    understoodEverything: "✅ میں سب سمجھ گیا!",
+    explainYourselfPrompt: "شاباش! اب یہ تصور مجھے اپنے الفاظ میں بول کر سمجھائیں۔ 🎙️",
+    doneExplaining: "بس، میں نے سمجھا دیا ✓",
+    analyzing: "استاد صاحب آپ کی وضاحت پرکھ رہے ہیں…",
   },
   "roman-urdu": {
     learningIn: "{language} mein seekh rahe hain",
@@ -156,6 +164,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "Whiteboard chhupayein",
     lessonComplete: "🎉 Sabaq mukammal!",
     online: "Online",
+    understoodEverything: "✅ Main sab samajh gaya!",
+    explainYourselfPrompt: "Shabash! Ab yeh concept mujhe apne alfaaz mein bol kar samjhayein. 🎙️",
+    doneExplaining: "Bas, main ne samjha diya ✓",
+    analyzing: "Ustad sahab aap ki wazahat parakh rahe hain…",
   },
   punjabi: {
     learningIn: "{language} چ سکھدے پئے او",
@@ -206,6 +218,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وائٹ بورڈ لکاؤ",
     lessonComplete: "🎉 سبق مکمل!",
     online: "آن لائن",
+    understoodEverything: "✅ میں سب سمجھ گیا!",
+    explainYourselfPrompt: "شاباش! ہن ایہ تصور مینوں اپنے لفظاں وچ بول کے سمجھاؤ۔ 🎙️",
+    doneExplaining: "بس، میں سمجھا دتا ✓",
+    analyzing: "استاد صاحب تہاڈی وضاحت پرکھ رہے نیں…",
   },
   pashto: {
     learningIn: "په {language} کې زده کوئ",
@@ -256,6 +272,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وایټ بورډ پټ کړئ",
     lessonComplete: "🎉 درس بشپړ شو!",
     online: "آنلاین",
+    understoodEverything: "✅ ما ټول وپوهېدل!",
+    explainYourselfPrompt: "شاباس! اوس دا مفهوم ما ته په خپلو خبرو کې تشریح کړه. 🎙️",
+    doneExplaining: "بس، ما تشریح کړه ✓",
+    analyzing: "استاد صاحب ستاسو تشریح ارزوي…",
   },
   sindhi: {
     learningIn: "{language} ۾ سکي رهيا آهيو",
@@ -306,6 +326,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وائيٽ بورڊ لڪايو",
     lessonComplete: "🎉 سبق مڪمل!",
     online: "آن لائن",
+    understoodEverything: "✅ مان سڀ سمجهي ويس!",
+    explainYourselfPrompt: "شاباس! هاڻي هي تصور مون کي پنهنجن لفظن ۾ ڳالهائي سمجهايو. 🎙️",
+    doneExplaining: "بس، مون سمجهايو ✓",
+    analyzing: "استاد صاحب توهان جي وضاحت جاچي رهيا آهن…",
   },
   saraiki: {
     learningIn: "{language} وِچ سِکھدے پئے او",
@@ -356,6 +380,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وائٹ بورڈ لکاؤ",
     lessonComplete: "🎉 سبق مکمل!",
     online: "آن لائن",
+    understoodEverything: "✅ میں سب سمجھ گھدا!",
+    explainYourselfPrompt: "شاباش! ہن ایہ تصور میکوں اپنے لفظاں وچ بول تے سمجھاؤ۔ 🎙️",
+    doneExplaining: "بس، میں سمجھا ڈتا ✓",
+    analyzing: "استاد صاحب تہاڈی وضاحت پرکھدے پئے ہن…",
   },
   balochi: {
     learningIn: "{language} ئی تا یاد گیریت",
@@ -406,6 +434,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "وائٹ بورڈ چیر کن",
     lessonComplete: "🎉 درس تمام بیت!",
     online: "آنلائن",
+    understoodEverything: "✅ من کل سرپد بوتاں!",
+    explainYourselfPrompt: "شاباش! نوں اے مفہوم وتی لبزاں ءَ منا سرپد کن۔ 🎙️",
+    doneExplaining: "بس، من سرپد کت ✓",
+    analyzing: "استاد صاحب شمے وضاحت چیک کن اِنت…",
   },
   english: {
     learningIn: "Learning in {language}",
@@ -456,6 +488,10 @@ export const UI_STRINGS: Record<LanguageCode, UiStrings> = {
     hideBoard: "Hide whiteboard",
     lessonComplete: "🎉 Lesson complete!",
     online: "Online",
+    understoodEverything: "✅ I understood everything!",
+    explainYourselfPrompt: "Great! Now explain the concept to me in your own words. 🎙️",
+    doneExplaining: "Done explaining ✓",
+    analyzing: "Ustad Sahab is analysing your explanation…",
   },
 };
 
