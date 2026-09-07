@@ -1,5 +1,5 @@
 import type { NextRequest } from "next/server";
-import { handleTutor } from "../../../api/tutor";
+import { handleTutor } from "@/lib/tutor";
 
 export async function POST(req: NextRequest) {
   return handleTutor(req);
