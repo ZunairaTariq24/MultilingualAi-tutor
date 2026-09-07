@@ -151,9 +151,18 @@ const WATER_CYCLE_LEVELS: VisualLevel[] = [
   },
 ];
 
+const PLANT_STRUCTURE_LEVELS: VisualLevel[] = [
+  { level: 1, caption: "Plant organs work together", nodes: [{ emoji: "🌱", text: "Roots", kind: "note" }, { emoji: "🌿", text: "Stem", kind: "note" }, { emoji: "🍃", text: "Leaves", kind: "note" }, { emoji: "🌼", text: "Flower", kind: "note" }] },
+  { level: 2, caption: "Root and stem transport", nodes: [{ emoji: "💧", text: "Root hairs absorb water", kind: "input" }, { emoji: "⬆️", text: "Xylem carries water upward", kind: "process" }, { emoji: "🍬", text: "Phloem carries sugars", kind: "output" }], showFlow: true },
+  { level: 3, caption: "Leaf cross-section", nodes: [{ emoji: "🛡️", text: "Upper epidermis + cuticle", kind: "note" }, { emoji: "☀️", text: "Palisade mesophyll: many chloroplasts", kind: "process" }, { emoji: "🌬️", text: "Spongy mesophyll: air spaces", kind: "note" }, { emoji: "🚪", text: "Stomata + guard cells", kind: "input" }] },
+  { level: 4, caption: "Gas exchange and transport", nodes: [{ emoji: "🌬️", text: "CO₂ enters stomata", kind: "input" }, { emoji: "💧", text: "Water arrives in xylem", kind: "input" }, { emoji: "🍃", text: "Leaf makes glucose", kind: "process" }, { emoji: "🫧", text: "O₂ exits", kind: "output" }, { emoji: "🍬", text: "Phloem distributes sugar", kind: "output" }], showFlow: true },
+  { level: 5, caption: "Flower structure and reproduction", nodes: [{ emoji: "🌼", text: "Anther produces pollen", kind: "input" }, { emoji: "🌸", text: "Stigma receives pollen", kind: "process" }, { emoji: "🌱", text: "Ovary contains ovules", kind: "output" }], showFlow: true },
+];
+
 const CUSTOM_LEVELS: Record<string, VisualLevel[]> = {
   "science/photosynthesis": PHOTOSYNTHESIS_LEVELS,
   "science/water-cycle": WATER_CYCLE_LEVELS,
+  "science/plant-structure": PLANT_STRUCTURE_LEVELS,
 };
 
 /* --------------------------- generic progressions --------------------------- */

@@ -20,6 +20,7 @@ import * as React from "react";
 import { Button } from "@/components/ui/Button";
 import { uiFor } from "@/lib/i18n";
 import { recordProgress } from "@/lib/progress";
+import { markTopicAttended, recordLearningInsight, recordLessonConcepts } from "@/lib/learning-records";
 import {
   speakText,
   speechRecognitionSupported,
@@ -106,6 +107,9 @@ export function TutorChat({
   modeRef.current = mode;
 
   const lastPayloadRef = React.useRef<TutorRequest | null>(null);
+  // React state updates are asynchronous, so `busy` alone cannot prevent two
+  // rapid browser events from entering run() before the next render.
+  const requestInFlightRef = React.useRef(false);
   const scrollRef = React.useRef<HTMLDivElement>(null);
   const boardLevelRef = React.useRef(boardLevel);
   boardLevelRef.current = boardLevel;
@@ -169,16 +173,22 @@ export function TutorChat({
       difficultyReached: s.highestDifficulty,
       date: Date.now(),
     });
+    markTopicAttended(subject.id, topic.id);
   }, [subject.id, topic.id]);
 
 const run = React.useCallback(
   async (payload: TutorRequest, isAnswer: boolean) => {
+    if (requestInFlightRef.current) return;
+    requestInFlightRef.current = true;
     setBusy(true);
     setError(false);
     lastPayloadRef.current = payload;
 
     try {
       const reply = await callTutor(payload);
+
+      recordLessonConcepts(subject.id, topic.id, reply.lessonConcepts);
+      if (isAnswer) recordLearningInsight(subject.id, topic.id, reply.learningInsight);
 
       setBubbles((prev) => [
         ...prev,
@@ -237,6 +247,7 @@ const run = React.useCallback(
     } catch {
       setError(true);
     } finally {
+      requestInFlightRef.current = false;
       setBusy(false);
     }
   },
@@ -247,6 +258,8 @@ const run = React.useCallback(
     onWhiteboardAction,
     language.ttsLocale,
     startMic,
+    subject.id,
+    topic.id,
   ]
 );
 const historyFrom = (list: Bubble[]): TutorTurn[] =>
@@ -263,11 +276,12 @@ const historyFrom = (list: Bubble[]): TutorTurn[] =>
 
   /** Explicit student action — the first and only trigger of the lesson. */
   const startLesson = () => {
+    if (started || requestInFlightRef.current) return;
     setStarted(true);
     run({ ...basePayload(), stage: "INTRODUCTION", message: "", history: [], intent: "START" }, false);
   };
 const startQuiz = () => {
-  if (busy || completed) return;
+  if (busy || completed || requestInFlightRef.current) return;
 
   setQuizMode(true);
 
@@ -286,7 +300,7 @@ const startQuiz = () => {
 };
 const send = () => {
   const text = input.trim();
-  if (!text || busy || completed) return;
+  if (!text || busy || completed || requestInFlightRef.current) return;
 
   const mine: Bubble = {
     id: uid("m"),
@@ -311,7 +325,7 @@ const send = () => {
   );
 };
   const retry = () => {
-    if (lastPayloadRef.current && !busy)
+    if (lastPayloadRef.current && !busy && !requestInFlightRef.current)
       run(lastPayloadRef.current, ANSWER_STAGES.includes(lastPayloadRef.current.stage));
   };
 
@@ -328,7 +342,7 @@ const send = () => {
 
   /** Student finished speaking — send the transcript for analysis. */
   const submitExplanation = (typedFallback?: string) => {
-    if (busy || completed) return;
+    if (busy || completed || requestInFlightRef.current) return;
     stopMic();
     stopSpeaking();
     const spoken = `${transcriptRef.current.final} ${transcriptRef.current.interim}`.trim();
@@ -413,7 +427,7 @@ const send = () => {
             <p className={cn("max-w-sm text-sm leading-relaxed text-slate-600", language.rtl && "font-urdu")}>
               {language.greeting}
             </p>
-            <Button onClick={startLesson} size="lg">
+            <Button onClick={startLesson} size="lg" disabled={busy}>
               {t.startLesson}
             </Button>
           </div>

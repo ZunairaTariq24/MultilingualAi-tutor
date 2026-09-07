@@ -85,7 +85,25 @@ export type WhiteboardAction =
   | "HIGHLIGHT_OUTPUTS";
 
 /** Why the student message is being sent to the tutor. */
-export type TutorIntent = "START" | "CHAT" | "SELF_EXPLANATION" | "QUIZ";
+export type TutorIntent = "START" | "CHAT" | "SELF_EXPLANATION" | "QUIZ" | "PERSONALIZED_QUIZ";
+
+export type LearningInsightStatus = "understood" | "partial" | "misconception" | "confused";
+
+export interface LearningInsight {
+  concept: string;
+  status: LearningInsightStatus;
+  keyPoint?: string;
+  studentEvidence?: string;
+}
+
+export interface QuizQuestion {
+  id: string;
+  concept: string;
+  question: string;
+  options: string[];
+  correctOption: number;
+  explanation: string;
+}
 
 /** One turn of the tutor conversation (kept client-side, replayed to the API). */
 export interface TutorTurn {
@@ -106,6 +124,8 @@ export interface TutorRequest {
   intent?: TutorIntent;
   /** Whiteboard level currently shown to the student (0 = empty board). */
   boardLevel?: number;
+  /** Local, compact learning profile used only for one explicit quiz generation request. */
+  learningProfile?: LearningInsight[];
 }
 
 /** Structured tutor reply — the backend never returns raw model text blindly. */
@@ -121,6 +141,12 @@ export interface TutorReply {
   conceptsUnderstood: string[];
   misconceptions: string[];
   missingConcepts: string[];
+  /** Concepts actually explained or checked in this response, for local student notes. */
+  lessonConcepts?: string[];
+  /** Insight from this student's submitted response; absent for lesson start. */
+  learningInsight?: LearningInsight;
+  /** Present only for the explicit personalized-quiz request. */
+  quiz?: QuizQuestion[];
 }
 
 export interface Topic {
@@ -129,6 +155,16 @@ export interface Topic {
   nameUr: string;
   emoji: string;
   description: string;
+  /** Optional smaller ideas that can be covered within the lesson. */
+  subtopics?: string[];
+}
+
+export interface SubjectCategory {
+  id: string;
+  name: string;
+  nameUr: string;
+  emoji: string;
+  topics: Topic[];
 }
 
 export interface Subject {
@@ -137,6 +173,9 @@ export interface Subject {
   nameUr: string;
   emoji: string;
   color: string;
+  /** Organizes the selection experience without changing tutor identifiers. */
+  categories: SubjectCategory[];
+  /** Flattened category topics retained for existing consumers and lookups. */
   topics: Topic[];
 }
 
